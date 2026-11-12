@@ -1,6 +1,17 @@
-[package]
-name = "QuicGuard"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+resolver = "3"
+members = ["crates/*"]
 
-[dependencies]
+[workspace.package]
+edition = "2024"
+license = "GPL-2.0-only"
+
+[workspace.dependencies]
+quinn = "0.11"
+rustls = "0.23"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+qg-wire = { path = "crates/qg-wire" }
+
+[workspace.lints.clippy]
+unwrap_used = "warn"
