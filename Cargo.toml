@@ -19,5 +19,8 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 ipnet = "2"
 
+# Certificats de test (outil de développement)
+rcgen = "0.13"
+
 [workspace.lints.clippy]
 unwrap_used = "warn"
