@@ -20,6 +20,8 @@ pub enum Command {
     Server(ServerArgs),
     /// Lance le client : ouvre un tunnel vers un serveur.
     Client(ClientArgs),
+    /// Génère un certificat auto-signé de TEST (développement uniquement).
+    GenCert(GenCertArgs),
 }
 
 #[derive(Debug, Args)]
@@ -54,4 +56,20 @@ pub struct ClientArgs {
     /// Certificat de confiance (CA) servant à vérifier le serveur (format DER).
     #[arg(long)]
     pub ca: PathBuf,
+}
+
+#[derive(Debug, Args)]
+pub struct GenCertArgs{
+    /// Nom DNS mis dans le certificat (doit correspondre au --name du client).
+    #[arg(long,default_value="localhost")]
+    pub name: String,
+
+    /// Fichier de sortie du certificat (DER).
+    #[arg(long, default_value="server.der")]
+    pub cert: PathBuf,
+
+    /// Fichier de sortie de la clé privée (PKCS#8, DER).
+    #[arg(long, default_value="server.key")]
+    pub key: PathBuf,
+    
 }

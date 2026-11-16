@@ -1,5 +1,5 @@
 //! QuicGuard v0 : VPN MASQUE CONNECT-IP en espace utilisateur, construit sur quinn.
-
+mod cert;
 mod cli;
 mod client;
 mod server;
@@ -23,5 +23,7 @@ async fn main() -> Result<()> {
     match cli.command {
         Command::Server(args) => server::run(args).await,
         Command::Client(args) => client::run(args).await,
+        Command::GenCert(args)=> cert::generate(args),
+        
     }
 }
