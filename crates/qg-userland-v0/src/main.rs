@@ -2,8 +2,8 @@
 mod cert;
 mod cli;
 mod client;
+mod quic;
 mod server;
-
 use anyhow::Result;
 use clap::Parser;
 use tracing_subscriber::EnvFilter;
@@ -23,7 +23,6 @@ async fn main() -> Result<()> {
     match cli.command {
         Command::Server(args) => server::run(args).await,
         Command::Client(args) => client::run(args).await,
-        Command::GenCert(args)=> cert::generate(args),
-        
+        Command::GenCert(args) => cert::generate(args),
     }
 }
