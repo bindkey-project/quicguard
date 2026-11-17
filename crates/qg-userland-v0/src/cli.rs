@@ -59,17 +59,16 @@ pub struct ClientArgs {
 }
 
 #[derive(Debug, Args)]
-pub struct GenCertArgs{
+pub struct GenCertArgs {
     /// Nom DNS mis dans le certificat (doit correspondre au --name du client).
-    #[arg(long,default_value="localhost")]
+    #[arg(long, default_value = "localhost")]
     pub name: String,
 
     /// Fichier de sortie du certificat (DER).
-    #[arg(long, default_value="server.der")]
+    #[arg(long, default_value = "server.der")]
     pub cert: PathBuf,
 
     /// Fichier de sortie de la clé privée (PKCS#8, DER).
-    #[arg(long, default_value="server.key")]
+    #[arg(long, default_value = "server.key")]
     pub key: PathBuf,
-    
 }
