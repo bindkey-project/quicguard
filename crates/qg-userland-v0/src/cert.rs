@@ -22,7 +22,7 @@ pub fn generate(args: GenCertArgs) -> Result<()> {
         .truncate(true)
         .mode(0o600)
         .open(&args.key)
-        .with_context(|| format!("écriture de {}", args.cert.display()))?;
+        .with_context(|| format!("écriture de {}", args.key.display()))?;
     key_file
         .write_all(&certified.key_pair.serialize_der())
         .with_context(|| format!("écriture de {}", args.key.display()))?;
