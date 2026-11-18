@@ -5,6 +5,7 @@ After=network-online.target
 
 [Service]
 Type=oneshot
+ExecCondition=/usr/bin/test ! -e /run/qg-lab/busy
 ExecStart=/usr/bin/ansible-pull \
     --url {{ gitops_repo_url }} \
     --checkout {{ gitops_branch }} \
