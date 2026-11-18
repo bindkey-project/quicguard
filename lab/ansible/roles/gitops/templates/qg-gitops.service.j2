@@ -10,6 +10,7 @@ ExecStart=/usr/bin/ansible-pull \
     --url {{ gitops_repo_url }} \
     --checkout {{ gitops_branch }} \
     --directory {{ gitops_checkout_dir }} \
+    --clean \
     --inventory {{ gitops_checkout_dir }}/lab/ansible/inventory.yml \
     --limit {{ inventory_hostname }} \
     --connection local \
