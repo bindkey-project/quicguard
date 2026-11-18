@@ -1,0 +1,46 @@
+- name: Install virtualization packages
+  ansible.builtin.dnf:
+    name: 
+      - "@virtualization"
+      - "python3-lxml"
+    state: present
+
+- name: Disable monolithic libvirtd
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop:
+    - libvirtd.service
+    - libvirtd.socket
+    - libvirtd-ro.socket
+    - libvirtd-admin.socket
+  
+- name: Enable modular libvirt daemons
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: 
+    - virtqemud.socket
+    - virtnetworkd.socket
+    - virtstoraged.socket
+
+- name: Define test networks
+  community.libvirt.virt_net:
+    command: define
+    name: "{{ item }}"
+    xml: "{{ lookup('ansible.builtin.file', item + '.xml') }}"
+  loop: "{{ libvirt_test_networks }}"
+
+- name: Start test networks
+  community.libvirt.virt_net:
+    name: "{{ item }}"
+    state: active
+  loop: "{{ libvirt_test_networks }}"
+
+- name: Start test networks at boot
+  community.libvirt.virt_net:
+    name: "{{ item }}"
+    autostart: true
+  loop: "{{ libvirt_test_networks }}"
