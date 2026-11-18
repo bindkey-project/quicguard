@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically apply QuicGuard lab configuration
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec={{ gitops_interval }}
+
+[Install]
+WantedBy=timers.target
