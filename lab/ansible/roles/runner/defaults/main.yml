@@ -1,0 +1,11 @@
+runner_version: "2.338.2"
+runner_sha256: baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40
+runner_user: gh-runner
+runner_home: /var/lib/gh-runner                   
+runner_dir: "{{ runner_home }}/actions-runner"     
+runner_repo_url: https://github.com/bindkey-project/quicguard
+runner_name: "{{ inventory_hostname }}"           
+runner_labels: qg-lab    
+runner_url: https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz
+runner_archive: "{{ runner_home }}/actions-runner-{{ runner_version }}.tar.gz"
+
