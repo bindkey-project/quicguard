@@ -1,0 +1,36 @@
+name: Lab smoke test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "lab/**"
+      - ".github/workflows/lab-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: [self-hosted, qg-lab]
+    timeout-minutes: 10
+    steps: 
+      - name: Take lab lock
+        run: touch /run/qg-lab/busy
+
+      - name: Show runner identity
+        run: | 
+          id 
+          hostname
+
+      - name: Check libvirt access
+        run: |
+          virsh -c qemu:///system net-list --all
+          virsh -c qemu:///system list --all
+
+      - name: Check lock is visible
+        run: test -e /run/qg-lab/busy
+
+      - name: Release lab lock
+        if: always()
+        run: rm -f /run/qg-lab/busy
