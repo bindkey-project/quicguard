@@ -1,0 +1,27 @@
+- name: Exclude kernel packages from dnf upgrades
+  community.general.ini_file:
+    path: /etc/dnf/dnf.conf
+    section: main
+    option: excludepkgs
+    value: kernel*
+    no_extra_spaces: true
+
+- name: Reboot 10 seconds after a kernel panic
+  ansible.posix.sysctl:
+    name: kernel.panic
+    value: "10"
+    sysctl_file: /etc/sysctl.d/90-panic.conf
+    sysctl_set: true
+
+- name: Allow SSH key authentication only
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/50-no-password.conf
+    content: "PasswordAuthentication no\n"
+    mode: "0644"
+  notify: Restart sshd
+
+- name: Disable dnf metadata refresh timer
+  ansible.builtin.systemd:
+    name: dnf-makecache.timer
+    enabled: false
+    state: stopped
