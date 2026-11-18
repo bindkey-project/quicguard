@@ -1,0 +1,7 @@
+- name: Configure lab hosts
+  hosts: lab
+  become: true
+  roles:
+    - base
+    - libvirt
+    - gitops

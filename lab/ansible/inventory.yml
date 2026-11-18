@@ -1,0 +1,7 @@
+all:
+  children:
+    lab:
+      hosts:
+        qg-lab-1:
+          ansible_user: quicguard
+          ansible_python_interpreter: /usr/bin/python3

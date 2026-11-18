@@ -1,0 +1,15 @@
+[Unit]
+Description=Apply QuicGuard lab configuration from Git
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/ansible-pull \
+    --url {{ gitops_repo_url }} \
+    --checkout {{ gitops_branch }} \
+    --directory {{ gitops_checkout_dir }} \
+    --inventory {{ gitops_checkout_dir }}/lab/ansible/inventory.yml \
+    --limit {{ inventory_hostname }} \
+    --connection local \
+    {{ gitops_playbook }} 

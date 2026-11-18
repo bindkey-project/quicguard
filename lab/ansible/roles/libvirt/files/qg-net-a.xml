@@ -1,0 +1,5 @@
+<network>
+    <name>qg-net-a</name>
+    <bridge name="qg-br-a" stp="off"/>
+    <mtu size="9000"/>
+</network>

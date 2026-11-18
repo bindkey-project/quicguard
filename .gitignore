@@ -2,3 +2,4 @@
 /docs-test
 /weeklys
 /tests-ouiyam
+/lab/ansible/host_vars/*.yml

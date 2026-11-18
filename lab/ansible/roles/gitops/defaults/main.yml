@@ -1,0 +1,6 @@
+gitops_repo_url: https://github.com/bindkey-project/quicguard.git
+gitops_branch: main
+gitops_checkout_dir: /var/lib/qg-gitops     
+gitops_playbook: lab/ansible/site.yml        
+gitops_interval: 15min
+
