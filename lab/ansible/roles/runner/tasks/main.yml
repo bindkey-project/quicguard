@@ -1,0 +1,105 @@
+- name: Install runner dependencies
+  ansible.builtin.dnf:
+    name:
+      - libicu
+      - lttng-ust
+      - krb5-libs
+      - openssl3-libs   # .NET runner code does not support OpenSSL 4 yet (which is by default installed in Fedora 45)
+      - zlib
+    state: present
+
+- name: Create runner user
+  ansible.builtin.user:
+    name: "{{ runner_user }}"
+    system: true
+    home: "{{ runner_home }}"
+    create_home: true
+    shell: /sbin/nologin
+    groups:
+      - libvirt
+      - kvm
+    append: true
+
+- name: Create runner directory
+  ansible.builtin.file:
+    path: "{{ runner_dir }}"
+    state: directory
+    owner: "{{ runner_user }}"
+    group: "{{ runner_user }}"
+    mode: "0750"
+
+- name: Download runner archive
+  ansible.builtin.get_url:
+    url: "{{ runner_url }}"
+    dest: "{{ runner_archive }}"
+    checksum: "sha256:{{ runner_sha256 }}"
+    mode: "0644"
+
+- name: Unpack runner
+  ansible.builtin.unarchive:
+    src: "{{ runner_archive }}"
+    dest: "{{ runner_dir }}"
+    remote_src: true
+    owner: "{{ runner_user }}"
+    group: "{{ runner_user }}"
+    creates: "{{ runner_dir }}/.qg-version-{{ runner_version }}"
+  notify: Restart runner
+
+- name: Mark installed runner version
+  ansible.builtin.file:
+    path: "{{ runner_dir }}/.qg-version-{{ runner_version }}"
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+    owner: "{{ runner_user }}"
+    group: "{{ runner_user }}"
+    mode: "0644"
+
+- name: Check if runner is registered 
+  ansible.builtin.stat:
+    path: "{{ runner_dir }}/.runner"
+  register: runner_registration
+
+- name: Register runner with GitHub
+  ansible.builtin.command:
+    cmd: >-
+      ./config.sh --unattended
+      --url {{ runner_repo_url }}
+      --token {{ runner_token }}
+      --name {{ runner_name }}
+      --labels {{ runner_labels }}
+      --work _work
+      --disableupdate
+    chdir: "{{ runner_dir }}"
+  become_user: "{{ runner_user }}"
+  no_log: true
+  when: 
+   - not runner_registration.stat.exists
+   - runner_token is defined
+  notify: Restart runner 
+
+- name: Install runner systemd unit
+  ansible.builtin.template:
+    src: qg-runner.service.j2
+    dest: /etc/systemd/system/qg-runner.service
+    mode: "0644"
+  notify: Restart runner
+
+- name: Enable runner service
+  ansible.builtin.systemd:
+    name: qg-runner.service
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Install lock directory config
+  ansible.builtin.template:
+    src: qg-lab.tmpfiles.conf.j2
+    dest: /etc/tmpfiles.d/qg-lab.conf
+    mode: "0644"
+  register: runner_tmpfiles
+
+- name: Create lock directory now
+  ansible.builtin.command:
+    cmd: systemd-tmpfiles --create /etc/tmpfiles.d/qg-lab.conf
+  when: runner_tmpfiles.changed

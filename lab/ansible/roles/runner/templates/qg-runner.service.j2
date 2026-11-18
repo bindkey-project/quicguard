@@ -1,0 +1,21 @@
+[Unit]
+Description=GitHub Actions runner {{ runner_name }}
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists={{ runner_dir }}/.runner
+
+[Service]
+User={{ runner_user }}
+WorkingDirectory={{ runner_dir }}
+ExecStart=/usr/bin/bash {{ runner_dir }}/bin/runsvc.sh
+KillMode=process
+KillSignal=SIGTERM
+TimeoutStopSec=5min
+Restart=on-failure
+RestartSec=30s
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
