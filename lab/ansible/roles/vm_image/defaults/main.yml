@@ -1,2 +1,5 @@
 vm_image_pool: qg-images
 vm_image_pool_path: /var/lib/libvirt/images/qg
+vm_image_name: Fedora-Cloud-Base-Generic-45-1.4.x86_64.qcow2
+vm_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/45/Cloud/x86_64/images/{{ vm_image_name }}"
+vm_image_sha256: "50bdc5e70f6a24f540932d15411c1c6ae9fcfa40fb990d876d83c5cc823b2ad0"
