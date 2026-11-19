@@ -1,3 +1,8 @@
+- name: Install seed ISO tool
+  ansible.builtin.dnf:
+    name: xorriso
+    state: present
+
 - name: Create image pool directory
   ansible.builtin.file:
     path: "{{ vm_image_pool_path }}" # under images/ for SELinux label
