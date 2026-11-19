@@ -1,0 +1,4 @@
+- name: Refresh image pool
+  community.libvirt.virt_pool:
+    command: refresh
+    name: "{{ vm_image_pool }}"
