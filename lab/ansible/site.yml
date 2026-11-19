@@ -4,5 +4,6 @@
   roles:
     - base
     - libvirt
+    - vm_image
     - gitops
     - runner 

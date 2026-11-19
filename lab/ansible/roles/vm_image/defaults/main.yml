@@ -1,0 +1,2 @@
+vm_image_pool: qg-images
+vm_image_pool_path: /var/lib/libvirt/images/qg

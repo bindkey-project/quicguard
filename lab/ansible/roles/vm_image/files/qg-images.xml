@@ -1,0 +1,6 @@
+<pool type="dir">
+    <name>qg-images</name>
+    <target>
+        <path>/var/lib/libvirt/images/qg</path>
+    </target>
+</pool>

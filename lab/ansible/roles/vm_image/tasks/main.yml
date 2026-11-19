@@ -1,0 +1,23 @@
+- name: Create image pool directory
+  ansible.builtin.file:
+    path: "{{ vm_image_pool_path }}" # under images/ for SELinux label
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Define image pool
+  community.libvirt.virt_pool:
+    command: define
+    name: "{{ vm_image_pool }}"
+    xml: "{{ lookup('ansible.builtin.file', 'qg-images.xml') }}"
+
+- name: Start image pool
+  community.libvirt.virt_pool:
+    name: "{{ vm_image_pool }}"
+    state: active
+
+- name: Start image pool at boot
+  community.libvirt.virt_pool:
+    name: "{{ vm_image_pool }}"
+    autostart: true
