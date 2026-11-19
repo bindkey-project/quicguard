@@ -1,0 +1,51 @@
+name: Lab VM test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "lab/vm/**"
+      - ".github/workflows/lab-vm.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  vm:
+    runs-on: [self-hosted, qg-lab]
+    timeout-minutes: 15
+    steps:
+      - name: Take lab lock
+        run: touch /run/qg-lab/busy
+
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Create work directory and SSH key
+        run: |
+          echo "QG_WORK_DIR=$RUNNER_TEMP/qg" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/qg"
+          ssh-keygen -q -t ed25519 -N "" -f "$RUNNER_TEMP/qg/id_ed25519"
+
+      # Leftovers from a crashed job would break up.sh
+      - name: Clean leftovers
+        run: lab/vm/down.sh client
+
+      - name: Start VM
+        run: lab/vm/up.sh client
+
+      - name: Wait for SSH
+        run: lab/vm/wait-ssh.sh client
+
+      # host-passthrough must expose AES-NI to the guest
+      - name: Check VM
+        run: |
+          lab/vm/ssh.sh client 'uname -r && grep -m1 -o -w aes /proc/cpuinfo'
+
+      - name: Destroy VM
+        if: always()
+        run: lab/vm/down.sh client
+
+      - name: Release lab lock
+        if: always()
+        run: rm -f /run/qg-lab/busy
