@@ -21,3 +21,13 @@
   community.libvirt.virt_pool:
     name: "{{ vm_image_pool }}"
     autostart: true
+
+- name: Download base image
+  ansible.builtin.get_url:
+    url: "{{ vm_image_url }}"
+    dest: "{{ vm_image_pool_path }}/{{ vm_image_name }}"
+    checksum: "sha256:{{ vm_image_sha256 }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Refresh image pool
